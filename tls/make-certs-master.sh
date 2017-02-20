@@ -7,6 +7,8 @@ set -o pipefail
 cert_group=kube-cert
 cert_dir=/etc/kubernetes/ssl
 
+core_home_dir=/home/core
+
 pem_ca=$cert_dir/ca.pem
 pem_ca_key=$cert_dir/ca-key.pem
 pem_server=$cert_dir/apiserver.pem
@@ -34,6 +36,9 @@ chmod 660 $pem_ca $pem_server
 
 # Copy CA stuff to host so worked nodes can use it
 cp $pem_ca $pem_ca_key /vagrant/artifacts/tls
+
+# Symlinking the CA stuff to the core home directory so that the CA certs are available to the kubectl commands
+ln -sf /vagrant/artifacts $core_home_dir/artifacts
 
 # Generate admin
 openssl genrsa -out $pem_admin_key 2048
